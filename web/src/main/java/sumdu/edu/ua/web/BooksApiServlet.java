@@ -6,19 +6,22 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import sumdu.edu.ua.config.Beans;
 import sumdu.edu.ua.core.domain.Book;
 import sumdu.edu.ua.core.domain.PageRequest;
 import sumdu.edu.ua.core.port.CatalogRepositoryPort;
-import sumdu.edu.ua.persistence.jdbc.JdbcBookRepository;
 
 import java.io.IOException;
 
 public class BooksApiServlet extends HttpServlet {
     private static final Logger log = LoggerFactory.getLogger(BooksApiServlet.class);
 
-    private final CatalogRepositoryPort bookRepo = Beans.getBookRepo();
-    private final ObjectMapper om = new ObjectMapper();
+    private final CatalogRepositoryPort bookRepo;
+    private final ObjectMapper om;
+
+    public BooksApiServlet(CatalogRepositoryPort bookRepo, ObjectMapper objectMapper) {
+        this.bookRepo = bookRepo;
+        this.om = objectMapper;
+    }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
