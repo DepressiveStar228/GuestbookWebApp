@@ -1,19 +1,18 @@
 package sumdu.edu.ua.web;
 
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServlet;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import sumdu.edu.ua.core.domain.Book;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
 import sumdu.edu.ua.core.domain.Comment;
 import sumdu.edu.ua.core.domain.PageRequest;
 import sumdu.edu.ua.core.port.CatalogRepositoryPort;
 import sumdu.edu.ua.core.port.CommentRepositoryPort;
 
-import java.io.IOException;
 import java.util.List;
 
-public class CommentsServlet extends HttpServlet {
+@Controller
+@RequestMapping("/comments")
+public class CommentsServlet {
     private final CatalogRepositoryPort bookRepo;
     private final CommentRepositoryPort commentRepo;
 
@@ -22,60 +21,31 @@ public class CommentsServlet extends HttpServlet {
         this.commentRepo = commentRepo;
     }
 
-    @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String bookIdStr = req.getParameter("bookId");
-        if (bookIdStr == null) {
-            resp.sendRedirect(req.getContextPath() + "/books");
-            return;
-        }
+    @GetMapping
+    public String list(@RequestParam long bookId, Model model) {
+        var book = bookRepo.findById(bookId);
+        List<Comment> comments = commentRepo.list(bookId, null, null, new PageRequest(0, 20)).getItems();
 
-        long bookId = Long.parseLong(bookIdStr);
-
-        Book book = bookRepo.findById(bookId);
-
-        PageRequest pageRequest = new PageRequest(0, 20);
-        List<Comment> comments = commentRepo
-                .list(bookId, null, null, pageRequest)
-                .getItems();
-
-        req.setAttribute("book", book);
-        req.setAttribute("comments", comments);
-        req.getRequestDispatcher("/WEB-INF/views/book-comments.jsp").forward(req, resp);
+        model.addAttribute("book", book);
+        model.addAttribute("comments", comments);
+        return "book-comments";
     }
 
-    @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
-        req.setCharacterEncoding("UTF-8");
-        String method = req.getParameter("_method");
-
-        if ("delete".equalsIgnoreCase(method)) {
-            long bookId = Long.parseLong(req.getParameter("bookId"));
-            long commentId = Long.parseLong(req.getParameter("commentId"));
-
-            try {
-                commentRepo.delete(bookId, commentId);
-                resp.sendRedirect(req.getContextPath() + "/comments?bookId=" + bookId);
-            } catch (Exception e) {
-                throw new ServletException("Cannot delete comment", e);
-            }
-            return;
-        }
-
-        long bookId = Long.parseLong(req.getParameter("bookId"));
-        String author = req.getParameter("author");
-        String text = req.getParameter("text");
-
-        if (author == null || author.isBlank() || text == null || text.isBlank()) {
-            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "author & text required");
-            return;
-        }
-
-        try {
+    @PostMapping
+    public String add(@RequestParam long bookId,
+                      @RequestParam String author,
+                      @RequestParam String text) {
+        if (!author.isBlank() && !text.isBlank()) {
             commentRepo.add(bookId, author.trim(), text.trim());
-            resp.sendRedirect(req.getContextPath() + "/comments?bookId=" + bookId);
-        } catch (Exception e) {
-            throw new ServletException("Cannot save comment", e);
         }
+
+        return "redirect:/comments?bookId=" + bookId;
+    }
+
+    @PostMapping("/delete")
+    public String delete(@RequestParam long bookId,
+                         @RequestParam long commentId) {
+        commentRepo.delete(bookId, commentId);
+        return "redirect:/comments?bookId=" + bookId;
     }
 }
