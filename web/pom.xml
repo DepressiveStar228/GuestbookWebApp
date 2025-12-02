@@ -60,6 +60,11 @@
             <artifactId>jackson-databind</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-thymeleaf</artifactId>
+        </dependency>
+
         <!-- залежимо від core та persistence -->
         <dependency>
             <groupId>sumdu.edu.ua</groupId>
