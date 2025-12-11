@@ -25,16 +25,4 @@ public class BooksController {
         model.addAttribute("books", books);
         return "books";
     }
-
-    @GetMapping("/new")
-    public String showAddForm(Model model) {
-        model.addAttribute("bookForm", new Book());
-        return "book-add";
-    }
-
-    @PostMapping
-    public String addBook(@ModelAttribute("bookForm") Book book) {
-        bookRepo.add(book.getTitle(), book.getAuthor(), book.getPubYear());
-        return "redirect:/books";
-    }
 }
