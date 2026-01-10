@@ -3,6 +3,7 @@ package sumdu.edu.ua.web;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import sumdu.edu.ua.core.domain.Book;
 import sumdu.edu.ua.core.domain.PageRequest;
 import sumdu.edu.ua.core.port.CatalogRepositoryPort;
 import sumdu.edu.ua.core.port.CommentRepositoryPort;
@@ -35,14 +36,13 @@ public class CommentsController {
     }
 
     @PostMapping
-    public String add(@RequestParam long bookId, @ModelAttribute("commentForm") CommentInput commentInput) {
-        commentRepo.add(bookId, commentInput.getAuthor().trim(), commentInput.getText().trim());
-        return "redirect:/comments?bookId=" + bookId;
+    public String add(@RequestParam Book book, @ModelAttribute("commentForm") CommentInput commentInput) {
+        commentRepo.add(book, commentInput.getAuthor().trim(), commentInput.getText().trim());
+        return "redirect:/comments?bookId=" + book.getId();
     }
 
     @PostMapping("/delete")
-    public String delete(@RequestParam long bookId,
-                         @RequestParam long commentId) {
+    public String delete(@RequestParam long bookId, @RequestParam long commentId) {
         commentRepo.delete(bookId, commentId);
         return "redirect:/comments?bookId=" + bookId;
     }

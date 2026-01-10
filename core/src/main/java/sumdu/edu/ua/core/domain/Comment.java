@@ -1,39 +1,39 @@
 package sumdu.edu.ua.core.domain;
 
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import java.time.Instant;
 
+@Entity
+@Table(name = "comments")
+@Getter
+@Setter
+@NoArgsConstructor
 public class Comment {
-    private final long id;
-    private final long bookId;
-    private final String author;
-    private final String text;
-    private final Instant createdAt;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    long id;
 
-    public Comment(long id, long bookId, String author, String text, Instant createdAt) {
-        this.id = id;
-        this.bookId = bookId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "book_id", nullable = false)
+    private Book book;
+
+    @Column(nullable = false)
+    String author;
+
+    @Column(length = 2000)
+    String text;
+
+    @Column(nullable = false)
+    Instant createdAt;
+
+    public Comment(Book book, String author, String text, Instant createdAt) {
+        this.book = book;
         this.author = author;
         this.text = text;
         this.createdAt = createdAt;
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public long getBookId() {
-        return bookId;
-    }
-
-    public String getAuthor() {
-        return author;
-    }
-
-    public String getText() {
-        return text;
-    }
-
-    public Instant getCreatedAt() {
-        return createdAt;
     }
 }

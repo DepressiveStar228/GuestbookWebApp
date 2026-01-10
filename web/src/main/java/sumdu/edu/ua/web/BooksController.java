@@ -25,4 +25,7 @@ public class BooksController {
         model.addAttribute("books", books);
         return "books";
     }
+
+    @GetMapping("/{id}")
+    public String getBookById(@PathVariable("id") int id) { return "redirect:/comments?bookId=" + id; }
 }

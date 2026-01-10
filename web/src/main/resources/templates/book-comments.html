@@ -19,7 +19,9 @@
 
 <ul th:if="${!#lists.isEmpty(comments)}">
     <li th:each="comment : ${comments}">
-        (<span th:text="${comment.author}"></span>):
+        <a th:href="@{/users/{name}/comments(name=${comment.author}, fromBookId=${book.id})}">
+            <span th:text="${comment.author}"></span>
+        </a>:
         <span th:text="${comment.text}"></span>
 
         <form th:action="@{/comments/delete}" method="post" style="display: inline;">

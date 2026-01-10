@@ -1,49 +1,42 @@
 package sumdu.edu.ua.core.domain;
 
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+import java.util.ArrayList;
+import java.util.List;
+
+@Entity
+@Table(name = "books")
+@Getter
+@Setter
+@NoArgsConstructor
 public class Book {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     long id;
+
+    @Column(nullable = false)
     String title;
+
     String author;
+
+    @Column(name = "pub_year")
     int pubYear;
 
-    public Book() {}
+    @OneToMany(mappedBy = "book", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    private List<Comment> comments = new ArrayList<>();
 
-    public Book(long id, String title, String author, int pubYear) {
-        this.id = id;
+    public Book(String title, String author, int pubYear) {
         this.title = title;
         this.author = author;
         this.pubYear = pubYear;
     }
 
-    public int getPubYear() {
-        return pubYear;
-    }
-
-    public void setPubYear(int pubYear) {
-        this.pubYear = pubYear;
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getAuthor() {
-        return author;
-    }
-
-    public void setAuthor(String author) {
-        this.author = author;
+    public void addComment(Comment comment) {
+        comments.add(comment);
+        comment.setBook(this);
     }
 }

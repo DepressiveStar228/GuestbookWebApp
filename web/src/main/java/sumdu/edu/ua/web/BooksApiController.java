@@ -1,6 +1,5 @@
 package sumdu.edu.ua.web;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -17,12 +16,8 @@ public class BooksApiController {
     private static final Logger log = LoggerFactory.getLogger(BooksApiController.class);
 
     private final CatalogRepositoryPort bookRepo;
-    private final ObjectMapper om;
 
-    public BooksApiController(CatalogRepositoryPort bookRepo, ObjectMapper objectMapper) {
-        this.bookRepo = bookRepo;
-        this.om = objectMapper;
-    }
+    public BooksApiController(CatalogRepositoryPort bookRepo) { this.bookRepo = bookRepo; }
 
     @GetMapping
     public ResponseEntity<Page<Book>> getBooks(
