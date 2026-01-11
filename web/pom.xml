@@ -12,7 +12,7 @@
     <groupId>sumdu.edu.ua</groupId>
     <artifactId>web</artifactId>
     <version>1.0-SNAPSHOT</version>
-    <packaging>war</packaging>
+    <packaging>jar</packaging>
 
     <dependencies>
         <!-- Підтримка JSP -->
@@ -26,11 +26,6 @@
             <groupId>jakarta.servlet.jsp.jstl</groupId>
             <artifactId>jakarta.servlet.jsp.jstl-api</artifactId>
             <version>3.0.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.angus</groupId>
-            <artifactId>jakarta.mail</artifactId>
-            <version>2.0.2</version>
         </dependency>
         <dependency>
             <groupId>org.glassfish.web</groupId>
@@ -75,6 +70,17 @@
             <artifactId>spring-boot-starter-freemarker</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-mail</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>42.7.4</version>
+        </dependency>
+
         <!-- залежимо від core та persistence -->
         <dependency>
             <groupId>sumdu.edu.ua</groupId>
@@ -91,7 +97,13 @@
     <build>
         <resources>
             <resource>
-                <directory>src/main/webapp</directory>
+                <directory>src/main/resources</directory>
+                <excludes>
+                    <exclude>**/*.jsp</exclude>
+                </excludes>
+            </resource>
+            <resource>
+                <directory>src/main/resources</directory>
                 <targetPath>META-INF/resources</targetPath>
                 <includes>
                     <include>**/*.jsp</include>
@@ -105,6 +117,20 @@
                 <version>3.4.0</version>
                 <configuration>
                     <failOnMissingWebXml>false</failOnMissingWebXml>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <mainClass>sumdu.edu.ua.web.AppInit</mainClass>
                 </configuration>
             </plugin>
         </plugins>

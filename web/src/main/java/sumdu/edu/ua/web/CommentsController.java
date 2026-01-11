@@ -36,15 +36,15 @@ public class CommentsController {
     }
 
     @PostMapping
-    public String add(@RequestParam Book book, @ModelAttribute("commentForm") CommentInput commentInput) {
+    public String add(@RequestParam("bookId") Book book, @ModelAttribute("commentForm") CommentInput commentInput) {
         commentRepo.add(book, commentInput.getAuthor().trim(), commentInput.getText().trim());
         return "redirect:/comments?bookId=" + book.getId();
     }
 
     @PostMapping("/delete")
-    public String delete(@RequestParam long bookId, @RequestParam long commentId) {
-        commentRepo.delete(bookId, commentId);
-        return "redirect:/comments?bookId=" + bookId;
+    public String delete(@RequestParam("bookId") Book book, @RequestParam long commentId) {
+        commentRepo.delete(book.getId(), commentId);
+        return "redirect:/comments?bookId=" + book.getId();
     }
 
     public static class CommentInput {

@@ -36,7 +36,8 @@
     </li>
 </ul>
 
-<form th:action="@{/comments(bookId=${book.id})}" th:object="${commentForm}" method="post">
+<form th:action="@{/comments}" th:object="${commentForm}" method="post">
+    <input type="hidden" name="bookId" th:value="${book.id}" />
     <label>
         <span th:text="#{label.author}">Author</span>:
         <input th:field="*{author}">
