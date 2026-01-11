@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import sumdu.edu.ua.core.domain.Book;
 
@@ -28,7 +29,7 @@ public class MailService {
         this.templateProcessor = templateProcessor;
     }
 
-
+    @Async
     public void sendNewBookEmail(Book book) {
         Map<String, Object> model = new HashMap<>();
         model.put("id", book.getId());
